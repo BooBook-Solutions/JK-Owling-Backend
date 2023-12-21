@@ -1,0 +1,9 @@
+fastapi~=0.104.1
+uvicorn[standard]
+
+pydantic~=2.5.2
+PyYAML~=6.0.1
+jose~=1.0.0
+passlib~=1.7.4
+requests~=2.31.0
+motor~=3.3.2
