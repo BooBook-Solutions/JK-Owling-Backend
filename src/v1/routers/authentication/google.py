@@ -12,7 +12,7 @@ GOOGLE_CLIENT_SECRET = "your-google-client-secret"
 GOOGLE_REDIRECT_URI = "your-google-redirect-uri"
 
 
-@router.get("/login/google")
+@router.get("/login")
 async def login_google():
     return {
         "url": f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&"
@@ -20,7 +20,7 @@ async def login_google():
     }
 
 
-@router.get("/auth/google")
+@router.get("/auth")
 async def auth_google(code: str):
     token_url = "https://accounts.google.com/o/oauth2/token"
     data = {
