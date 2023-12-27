@@ -1,11 +1,23 @@
-from fastapi import FastAPI
+import logging
 
-from core.database import Database
-from v1.base import router as v1_router
+from fastapi import FastAPI, Request
+
+from app.base import router as app_router
+from app.middlewares.authentication import authentication_middleware
+
+
+logging.basicConfig(
+    level=logging.DEBUG,  # Set the logging level
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 
 app = FastAPI()
 
-database = Database()
-app.database = database
 
-app.include_router(v1_router, prefix="/v1")
+@app.middleware("http")
+async def attach_authentication_middleware(request: Request, call_next):
+    response = await authentication_middleware(request, call_next)
+    return response
+
+app.include_router(app_router, prefix="")

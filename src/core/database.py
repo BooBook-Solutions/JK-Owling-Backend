@@ -1,6 +1,7 @@
 import motor.motor_asyncio
 
-import settings
+from app import settings
+from core.collections.book import BookCollection
 from core.collections.user import UserCollection
 
 
@@ -11,7 +12,11 @@ class Database:
         self.database = client.jk_owling
         self.collections = {
             "user": UserCollection(self.database),
+            "book": BookCollection(self.database),
         }
 
     def get_collection(self, collection_name):
         return self.database[collection_name]
+
+    def close(self):
+        self.database.client.close()

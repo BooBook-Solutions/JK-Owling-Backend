@@ -1,22 +1,32 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+from typing import TypeVar, Generic, List
+
+from pydantic import BaseModel
+
+T = TypeVar('T', bound=BaseModel)
 
 
-class BaseCollection(ABC):
+class BaseCollection(ABC, Generic[T]):
 
     def __init__(self, database):
         self.collection = database.user
 
-    def find(self, query):
-        return self.collection.find(query)
+    @abstractmethod
+    def get(self, **kwargs) -> T:
+        pass
 
-    async def find_one(self, query):
-        return await self.collection.find_one(query)
+    @abstractmethod
+    def create(self, **kwargs) -> T:
+        pass
 
-    async def insert_one(self, document):
-        return await self.collection.insert_one(document)
+    @abstractmethod
+    def update(self, **kwargs) -> T:
+        pass
 
-    async def update_one(self, query, update):
-        return await self.collection.update_one(query, update)
+    @abstractmethod
+    def delete(self, **kwargs) -> T:
+        pass
 
-    async def delete_one(self, query):
-        return await self.collection.delete_one(query)
+    @abstractmethod
+    def filter(self, **kwargs) -> List[T]:
+        pass
