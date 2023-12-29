@@ -7,5 +7,5 @@ router = APIRouter(
     responses={404: {"description": "Release not found"}},
 )
 
-router.include_router(book_router, prefix="/book")
+router.include_router(book_router, prefix="/books")
 router.include_router(authentication_router, prefix="/authentication")

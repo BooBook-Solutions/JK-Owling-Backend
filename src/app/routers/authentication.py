@@ -2,15 +2,14 @@ import time
 
 from fastapi import APIRouter, Depends
 from fastapi.openapi.models import Response
-from google.auth.transport import requests
-from google.oauth2 import id_token
 from jose import jwt
 from starlette import status
 
+from app.authentication import verify_google_token
 from app.database import get_db
 import logging
 
-from app.settings import GOOGLE_CLIENT_ID, HASH_ALGORITHM, HASH_SECRET_KEY
+from app.settings import HASH_ALGORITHM, HASH_SECRET_KEY
 from core.schemas import User
 
 logger = logging.getLogger("app.routers.authentication")
@@ -24,16 +23,13 @@ router = APIRouter(
 async def login_user(google_token: str, response: Response, db=Depends(get_db)):
 
     try:
-        info = id_token.verify_oauth2_token(
-            google_token,
-            requests.Request(),
-            GOOGLE_CLIENT_ID
-        )
+        info = verify_google_token(google_token)
 
         if info:
             user = db.get_collection("user").get(info.get("sub"))
             if user is None:
-                new_user = User(**{"name": info.get("name") + info.get("family_name"), "email": info.get("email"),
+                new_user = User(**{"name": info.get("name") + " " + info.get("family_name"),
+                                   "email": info.get("email"),
                                    "password": "", "role": "user"})
                 user = db.get_collection("user").create(new_user)
                 logger.info("User created: " + str(user))
@@ -45,6 +41,7 @@ async def login_user(google_token: str, response: Response, db=Depends(get_db)):
 
             token = jwt.encode(payload, HASH_SECRET_KEY, algorithm=HASH_ALGORITHM)
 
+            response.status_code = status.HTTP_200_OK
             return {"token": token}
 
     except ValueError:
