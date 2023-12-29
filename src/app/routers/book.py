@@ -1,8 +1,12 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 
 from app.authentication import authenticated_user, authenticated_admin
 from app.database import get_db
 import logging
+
+from core.schemas import Book
 
 logger = logging.getLogger("app.routers.book")
 
@@ -11,18 +15,26 @@ router = APIRouter(
 )
 
 
-@router.get("")
-async def get_books(name: str = "",
-                    user=Depends(authenticated_user), db=Depends(get_db)):
-    books = db.get_collection("book")
-    logger.info("List of books: " + str([b.id for b in books]))
-    return await books.filter()
+@router.get("", response_model=List[Book])
+async def get_books(name: str = "", db=Depends(get_db)):
+    books = await db.get_collection("book").filter()
+    return books
 
 
-@router.post("")
-async def create_book(name: str, isbn: str = "", author: str = "",
-                      user=Depends(authenticated_admin), db=Depends(get_db)):
-    books = db.get_collection("book")
-    book = books.create({"name": name, "isbn": isbn, "author": author})
-    logger.info("Admin "+str(user.id)+" created book: " + str(book))
-    return {"book": book, "message": "Book created successfully"}
+@router.get("/{book_id}", response_model=Book)
+async def get_books(book_id: str, db=Depends(get_db)):
+    book = await db.get_collection("book").get(book_id)
+    return book
+
+
+@router.post("/{book_id}/order", response_model=Book)
+async def get_books(book_id: str, user=Depends(authenticated_user), db=Depends(get_db)):
+    book = await db.get_collection("book").get(book_id)
+    logger.info("User " + str(user.id) + " ordered book: " + str(book))
+    return {"message": "Book ordered successfully"}
+
+
+@router.post("", response_model=Book)
+async def create_book(user=Depends(authenticated_admin), db=Depends(get_db)):
+    logger.info("Admin " + str(user.id) + " created book: ")
+    return {"message": "Book created successfully"}

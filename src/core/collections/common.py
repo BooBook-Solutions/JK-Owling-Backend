@@ -11,22 +11,29 @@ class BaseCollection(ABC, Generic[T]):
     def __init__(self, database):
         self.collection = database.user
 
+    def to_pydantic(self, item, model):
+        if item is None:
+            return None
+        if getattr(model, '__origin__', None) is list:
+            return [self.to_pydantic(i, model.__args__[0]) for i in item]
+        return model(id=str(item["_id"]), **item)
+
     @abstractmethod
-    def get(self, **kwargs) -> T:
+    async def get(self, **kwargs) -> T:
         pass
 
     @abstractmethod
-    def create(self, **kwargs) -> T:
+    async def create(self, **kwargs) -> T:
         pass
 
     @abstractmethod
-    def update(self, **kwargs) -> T:
+    async def update(self, **kwargs) -> T:
         pass
 
     @abstractmethod
-    def delete(self, **kwargs) -> T:
+    async def delete(self, **kwargs) -> T:
         pass
 
     @abstractmethod
-    def filter(self, **kwargs) -> List[T]:
+    async def filter(self, **kwargs) -> List[T]:
         pass

@@ -1,10 +1,10 @@
 import logging
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
+from starlette.middleware.cors import CORSMiddleware
 
 from app.base import router as app_router
 from app.middlewares.authentication import authentication_middleware
-
 
 logging.basicConfig(
     level=logging.DEBUG,  # Set the logging level
@@ -13,6 +13,15 @@ logging.basicConfig(
 
 
 app = FastAPI()
+
+# Allow CORS for all origins, methods, headers
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.middleware("http")

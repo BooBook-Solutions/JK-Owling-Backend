@@ -7,7 +7,7 @@ from google.auth.transport import requests
 from google.oauth2 import id_token
 
 from app.database import get_db
-from app.settings import GOOGLE_CLIENT_ID  # , HASH_SECRET_KEY, HASH_ALGORITHM
+from app.settings import GOOGLE_CLIENT_ID
 from core.schemas import User
 
 logger = logging.getLogger("app.authentication")
@@ -23,6 +23,8 @@ def verify_google_token(token: str) -> dict | None:
             "sub": id_info.get("sub"),  # Subject (user ID)
             "email": id_info.get("email"),
             "name": id_info.get("name"),
+            "family_name": id_info.get("family_name"),
+            "picture": id_info.get("picture"),
             # Add more fields as needed
         }
 
@@ -43,9 +45,8 @@ async def authenticated_user(request: Request, db=Depends(get_db)) -> User:
     user_id = authenticated_token.get("sub")
     user = user_collection.get(user_id)
 
-    # Create user if not exists, first login
     if user is None:
-        user = user_collection.create(user)
+        raise HTTPException(status_code=401, detail="Credentials are invalid")
     return user
 
 

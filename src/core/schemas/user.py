@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
-    id: int
+    id: str | None = None
+    name: str | None = None
     email: str | None = None
-    full_name: str | None = None
-    disabled: bool = False
-    is_admin: bool = False
+    password: str | None = None
+    role: str | None = None
