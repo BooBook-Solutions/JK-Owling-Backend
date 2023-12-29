@@ -23,6 +23,7 @@ def verify_google_token(token: str) -> dict | None:
             "sub": id_info.get("sub"),  # Subject (user ID)
             "email": id_info.get("email"),
             "name": id_info.get("name"),
+            "given_name": id_info.get("given_name"),  # First name
             "family_name": id_info.get("family_name"),
             "picture": id_info.get("picture"),
             # Add more fields as needed

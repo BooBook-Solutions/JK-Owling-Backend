@@ -14,13 +14,17 @@ logging.basicConfig(
 
 app = FastAPI()
 
-# Allow CORS for all origins, methods, headers
+origins = [
+    "http://localhost:3000",  # replace with your frontend domain
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],  # specify allowed HTTP methods
+    allow_headers=["*"],  # allow all headers, adjust as needed
+    expose_headers=["Content-Disposition"],  # expose specific headers, if required
 )
 
 

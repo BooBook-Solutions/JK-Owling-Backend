@@ -29,9 +29,11 @@ async def login_user(request: Request, response: Response, db=Depends(get_db)):
         if info:
             user = await db.get_collection("user").get(email=info.get("email"))
             if user is None:
-                new_user = User(**{"name": info.get("name"),
+                new_user = User(**{"name": info.get("given_name"),
+                                   "surname": info.get("family_name"),
+                                   "picture": info.get("picture"),
                                    "email": info.get("email"),
-                                   "password": "", "role": "user"})
+                                   "role": "user"})
                 user_collection = db.get_collection("user")
                 user = await user_collection.create(new_user)
                 logger.info("User created: " + str(user))
