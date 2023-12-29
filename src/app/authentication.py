@@ -45,9 +45,8 @@ async def authenticated_user(request: Request, db=Depends(get_db)) -> User:
     user_id = authenticated_token.get("sub")
     user = user_collection.get(user_id)
 
-    # Create user if not exists, first login
     if user is None:
-        user = user_collection.create(user)
+        raise HTTPException(status_code=401, detail="Credentials are invalid")
     return user
 
 
