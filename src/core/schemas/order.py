@@ -6,9 +6,9 @@ from pydantic import BaseModel
 
 
 class Status(Enum):
-    PENDING = "Pending"
-    APPROVED = "Confirmed"
-    REJECTED = "Rejected"
+    PENDING = "pending"
+    APPROVED = "confirmed"
+    REJECTED = "rejected"
 
 
 class Order(BaseModel):
