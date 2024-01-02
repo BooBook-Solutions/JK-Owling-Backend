@@ -10,11 +10,14 @@ class OrderCollection(BaseCollection[Order]):
 
     def __init__(self, database):
         super().__init__(database)
-        self.collection = database.book
+        self.collection = database.order
         self.instance_class = Order
 
     async def filter(self, user_id: Optional[str] = None, **kwargs) -> List[Order]:
-        items = await self.collection.find({"user": user_id}).to_list(length=None)
+        if user_id is None:
+            items = await self.collection.find().to_list(length=None)
+        else:
+            items = await self.collection.find({"user": user_id}).to_list(length=None)
         return self.to_pydantic(items, List[Order])
 
     async def update(self, order_id: str, **kwargs) -> Order:

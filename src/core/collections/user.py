@@ -1,3 +1,7 @@
+from typing import Optional
+
+from bson import ObjectId
+
 from core.collections.common import BaseCollection
 from core.schemas import User
 
@@ -9,6 +13,10 @@ class UserCollection(BaseCollection[User]):
         self.collection = database.user
         self.instance_class = User
 
-    async def get(self, email: str) -> User:
+    async def get(self, email: Optional[str], **kwargs) -> User:
+        user_id = kwargs.get("user_id")
+        if user_id:
+            user = await self.collection.find_one({"_id": ObjectId(user_id)})
+            return self.to_pydantic(user, User)
         user = await self.collection.find_one({"email": email})
         return self.to_pydantic(user, User)

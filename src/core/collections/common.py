@@ -54,5 +54,5 @@ class BaseCollection(ABC, Generic[T]):
         return item
 
     async def delete(self, item_id) -> bool:
-        result = self.collection.delete_one({'_id': ObjectId(item_id)})
+        result = await self.collection.delete_one({'_id': ObjectId(item_id)})
         return result.deleted_count > 0

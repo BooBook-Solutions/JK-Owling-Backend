@@ -2,6 +2,7 @@ from fastapi import HTTPException, Request
 from jose import jwt, JWTError
 
 from app.settings import HASH_SECRET_KEY, HASH_ALGORITHM
+from core.schemas import User
 
 
 async def authentication_middleware(request: Request, call_next):
@@ -15,12 +16,16 @@ async def authentication_middleware(request: Request, call_next):
 
     request.state.is_authenticated = False
     request.state.authenticated_user = None
+    request.state.authenticated_token = None
     if token:
         try:
             token = token.split("Bearer ")[1]
             payload = jwt.decode(token, HASH_SECRET_KEY, algorithms=[HASH_ALGORITHM])
             if payload is None:
                 raise credentials_exception
+            request.state.is_authenticated = True
+            request.state.authenticated_token = payload
+            request.state.authenticated_user = User(**payload.get("user"))
 
         except JWTError:
             raise credentials_exception

@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Depends
+from starlette.requests import Request
 
 from app.authentication import authenticated_user
 from app.common import RequestException
@@ -30,13 +31,16 @@ async def get_user(user_id: str, db=Depends(get_db)):
 
 
 @router.put("/{user_id}", response_model=User)
-async def update_user(user_id: str, user=Depends(authenticated_user), db=Depends(get_db)):
-    request_user = await db.get_collection("user").get(user_id)
+async def update_user(user_id: str, request: Request, user=Depends(authenticated_user), db=Depends(get_db)):
+    request_user = await db.get_collection("user").get(None, user_id=user_id)
     if request_user is None:
         raise RequestException("User not found")
     if user.role != ADMIN_ROLE and user_id != user.id:
         raise RequestException("You are not allowed to update this user")
-    updated_user = await db.get_collection("user").update(request_user)
+
+    data = await request.json()
+    updated_user = request_user.model_copy(update=data)
+    updated_user = await db.get_collection("user").update(updated_user)
 
     if user.role == ADMIN_ROLE:
         logger.info("Admin " + str(user.id) + " updated user: " + str(updated_user))
@@ -47,7 +51,7 @@ async def update_user(user_id: str, user=Depends(authenticated_user), db=Depends
 
 @router.delete("/{user_id}", response_model=User)
 async def delete_user(user_id: str, user=Depends(authenticated_user), db=Depends(get_db)):
-    request_user = await db.get_collection("user").get(user_id)
+    request_user = await db.get_collection("user").get(None, user_id=user_id)
     if request_user is None:
         raise RequestException("User not found")
     if user.role != ADMIN_ROLE and user_id != user.id:

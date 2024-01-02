@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Depends
+from starlette.requests import Request
 
 from app.authentication import authenticated_user, authenticated_admin
 from app.common import RequestException
@@ -36,11 +37,17 @@ async def create_order(order: Order, user=Depends(authenticated_user), db=Depend
 
 
 @router.put("/{order_id}", response_model=Order)
-async def update_order(order_id: str, status: str, user=Depends(authenticated_admin), db=Depends(get_db)):
+async def update_order(order_id: str, request: Request, user=Depends(authenticated_admin), db=Depends(get_db)):
     order = await db.get_collection("order").get(order_id)
     if order is None:
         raise RequestException("Order not found")
+
+    data = await request.json()
+    status = data.get("status")
+    if status is None:
+        raise RequestException("No status provided")
     order = await db.get_collection("order").update(order_id, status=status)
+
     logger.info("Admin " + str(user.id) + " updated order: " + str(order))
     return order
 
