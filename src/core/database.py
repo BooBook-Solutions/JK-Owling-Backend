@@ -1,18 +1,22 @@
-import motor.motor_asyncio
+from motor import motor_asyncio
+from pymongo import MongoClient
 
-from app import settings
+from app.settings import MONGODB_URL
 from core.collections.book import BookCollection
+from core.collections.order import OrderCollection
 from core.collections.user import UserCollection
 
 
 class Database:
 
     def __init__(self):
-        client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGODB_URL)
-        self.database = client.melius
+        self.client = motor_asyncio.AsyncIOMotorClient(MONGODB_URL)
+        # self.client = MongoClient(MONGODB_URL)
+        self.database = self.client.melius
         self.collections = {
             "user": UserCollection(self.database),
             "book": BookCollection(self.database),
+            "order": OrderCollection(self.database)
         }
 
     def get_collection(self, collection_name):

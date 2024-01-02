@@ -7,7 +7,7 @@ from google.auth.transport import requests
 from google.oauth2 import id_token
 
 from app.database import get_db
-from app.settings import GOOGLE_CLIENT_ID
+from app.settings import GOOGLE_CLIENT_ID, ADMIN_ROLE
 from core.schemas import User
 
 logger = logging.getLogger("app.authentication")
@@ -23,6 +23,7 @@ def verify_google_token(token: str) -> dict | None:
             "sub": id_info.get("sub"),  # Subject (user ID)
             "email": id_info.get("email"),
             "name": id_info.get("name"),
+            "given_name": id_info.get("given_name"),  # First name
             "family_name": id_info.get("family_name"),
             "picture": id_info.get("picture"),
             # Add more fields as needed
@@ -40,17 +41,18 @@ async def authenticated_user(request: Request, db=Depends(get_db)) -> User:
     user_is_authenticated = request.state.is_authenticated
     if not user_is_authenticated:
         raise HTTPException(status_code=401, detail="Authentication is required to access this resource")
-    authenticated_token = request.state.authenticated_token
+    request_user = request.state.authenticated_user
     user_collection = db.get_collection("user")
-    user_id = authenticated_token.get("sub")
-    user = user_collection.get(user_id)
+    user = await user_collection.get(request_user.email)
 
-    if user is None:
-        raise HTTPException(status_code=401, detail="Credentials are invalid")
+    if user is None or user != request_user:
+        raise HTTPException(status_code=401, detail="Credentials user is invalid")
     return user
 
 
 async def authenticated_admin(user: User = Depends(authenticated_user)):
-    if not user.is_admin:
+    # user is coroutine, I have to execute the method instead
+
+    if user.role != ADMIN_ROLE:
         raise HTTPException(status_code=403, detail="You do not have permission to access this resource")
     return user

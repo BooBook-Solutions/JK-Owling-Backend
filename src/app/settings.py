@@ -8,3 +8,7 @@ HASH_SECRET_KEY = os.getenv('HASH_SECRET_KEY', '')
 HASH_ALGORITHM = os.getenv('HASH_ALGORITHM', 'HS256')
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
 
+# Settings
+ADMIN_ROLE = os.getenv('ADMIN_ROLE', 'Admin')
+USER_ROLE = os.getenv('USER_ROLE', 'Member')
+
