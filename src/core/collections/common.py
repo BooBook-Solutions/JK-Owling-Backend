@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import TypeVar, Generic, List, get_args
 
 from bson import ObjectId
@@ -31,6 +32,7 @@ class BaseCollection(ABC, Generic[T]):
             d = {k: v for k, v in item.dict().items() if k != "id"}
         else:
             d = item.dict()
+        d = {k: (v.value if isinstance(v, Enum) else v) for k, v in d.items()}
         return d
 
     async def get(self, item_id: str) -> T:

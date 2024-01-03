@@ -11,6 +11,7 @@ import logging
 
 from app.settings import HASH_ALGORITHM, HASH_SECRET_KEY
 from core.schemas import User
+from core.schemas.user import UserRole
 
 logger = logging.getLogger("app.routers.authentication")
 
@@ -33,15 +34,16 @@ async def login_user(request: Request, response: Response, db=Depends(get_db)):
                                    "surname": info.get("family_name"),
                                    "picture": info.get("picture"),
                                    "email": info.get("email"),
-                                   "role": "user"})
+                                   "role": UserRole.USER})
                 user_collection = db.get_collection("user")
                 user = await user_collection.create(new_user)
                 logger.info("User created: " + str(user))
 
             payload = {
-                "user": user.dict(),
+                "user": {k: (str(v) if isinstance(v, UserRole) else v) for k, v in user.dict().items()},
                 "expires": time.time() + (60 * 60 * 24)  # 24h
             }
+            print(payload)
 
             token = jwt.encode(payload, HASH_SECRET_KEY, algorithm=HASH_ALGORITHM)
 

@@ -24,4 +24,4 @@ class OrderCollection(BaseCollection[Order]):
         status = kwargs.get('status')
         self.collection.update_one({'_id': ObjectId(order_id)}, {'$set': {"status": status}})
         item = await self.collection.find_one({"_id": ObjectId(order_id)})
-        return item
+        return self.to_pydantic(item, Order)

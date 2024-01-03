@@ -1,6 +1,16 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+from typing import Annotated
+
+from pydantic import BaseModel, BeforeValidator
+
+
+def convert_str_to_int(value: str) -> int:
+    return int(value)
+
+
+def convert_str_to_float(value: str) -> float:
+    return float(value)
 
 
 class Book(BaseModel):
@@ -8,6 +18,6 @@ class Book(BaseModel):
     title: str | None = None
     description: str | None = None
     author: str | None = None
-    price: float | None = None
+    price: Annotated[float, BeforeValidator(convert_str_to_float)] | None = None
     cover: str | None = None
-    quantity: int | None = None
+    quantity: Annotated[int, BeforeValidator(convert_str_to_int)] | None = None

@@ -9,6 +9,7 @@ from google.oauth2 import id_token
 from app.database import get_db
 from app.settings import GOOGLE_CLIENT_ID, ADMIN_ROLE
 from core.schemas import User
+from core.schemas.user import UserRole
 
 logger = logging.getLogger("app.authentication")
 
@@ -53,6 +54,6 @@ async def authenticated_user(request: Request, db=Depends(get_db)) -> User:
 async def authenticated_admin(user: User = Depends(authenticated_user)):
     # user is coroutine, I have to execute the method instead
 
-    if user.role != ADMIN_ROLE:
+    if user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="You do not have permission to access this resource")
     return user

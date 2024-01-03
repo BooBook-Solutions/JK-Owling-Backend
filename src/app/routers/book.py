@@ -43,7 +43,7 @@ async def update_book(book_id: str, request: Request, user=Depends(authenticated
         raise RequestException("Book not found")
 
     data = await request.json()
-    book_data = book.model_copy(update=data)
+    book_data = Book(**(book.model_copy(update=data).dict()))
     updated_book = await db.get_collection("book").update(book_data)
     logger.info("Admin " + str(user.id) + " updated book: " + str(updated_book))
     return updated_book
@@ -54,8 +54,6 @@ async def delete_book(book_id: str, user=Depends(authenticated_admin), db=Depend
     book = await db.get_collection("book").get(book_id)
     if book is None:
         raise RequestException("Book not found")
-    print(book)
-    print(book_id)
     result = await db.get_collection("book").delete(book_id)
     if result:
         logger.info("User " + str(user.id) + " deleted book: " + str(book))
