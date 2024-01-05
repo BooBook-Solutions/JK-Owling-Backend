@@ -1,10 +1,11 @@
 import logging
 
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request
 from starlette.middleware.cors import CORSMiddleware
 
 from app.base import router as app_router
 from app.middlewares.authentication import authentication_middleware
+from app.settings import FRONTEND_URL
 
 logging.basicConfig(
     level=logging.DEBUG,  # Set the logging level
@@ -15,7 +16,7 @@ logging.basicConfig(
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",  # replace with your frontend domain
+    FRONTEND_URL,  # replace with your frontend domain
 ]
 
 app.add_middleware(

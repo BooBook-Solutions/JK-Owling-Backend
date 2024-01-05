@@ -12,3 +12,6 @@ GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
 ADMIN_ROLE = os.getenv('ADMIN_ROLE', 'admin')
 USER_ROLE = os.getenv('USER_ROLE', 'user')
 
+# Frontend
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+
