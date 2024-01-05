@@ -82,13 +82,16 @@ async def delete_user(user_id: str, user=Depends(authenticated_user), db=Depends
 
 
 def return_user(user: User) -> UserGetResponse:
+    role = user.role
+    if isinstance(role, str):
+        role = UserRole(role)
     return UserGetResponse(**{
         "id": user.id,
         "name": user.name,
         "surname": user.surname,
         "email": user.email,
         "picture": user.picture,
-        "role": UserRoleGetResponse(name=user.role, name_translated=UserRoleMapping.from_user_role(user.role))
+        "role": UserRoleGetResponse(name=role.value, name_translated=UserRoleMapping.from_user_role(role))
     })
 
 # MISSING METHODS: create_user
