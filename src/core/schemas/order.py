@@ -15,7 +15,6 @@ class Status(Enum):
     def __str__(self):
         return self.value
 
-
 class StatusMapping(Enum):
     PENDING = "Pending"
     APPROVED = "Approved"
@@ -32,21 +31,21 @@ class StatusGetResponse(BaseModel):
 
 
 class Order(BaseModel):
-    id: str | None = None
-    user: str | None = None
-    book: str | None = None
+    id: int | None = None
+    user: int | None = None
+    book: int | None = None
     quantity: int | None = None
     status: Status | None = None
 
 
 class OrderPost(BaseModel):
-    user_id: str
-    book_id: str
+    user_id: int
+    book_id: int
     quantity: int
 
 
 class OrderGetResponse(BaseModel):
-    id: str
+    id: int
     user: User
     book: Book
     quantity: int

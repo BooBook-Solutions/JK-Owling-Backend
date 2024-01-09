@@ -14,7 +14,7 @@ def convert_str_to_float(value: str) -> float:
 
 
 class Book(BaseModel):
-    id: str | None = None
+    id: int | None = None
     title: str | None = None
     description: str | None = None
     author: str | None = None

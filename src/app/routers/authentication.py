@@ -52,6 +52,9 @@ async def login_user(request: Request, response: Response, db=Depends(get_db)):
 
     except Exception as e:
         print(e)
+        # print stack trace
+        import traceback
+        traceback.print_exc()
 
     response.status_code = status.HTTP_400_BAD_REQUEST
     return {"message": "Invalid login credentials"}
