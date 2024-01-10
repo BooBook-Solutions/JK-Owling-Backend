@@ -58,6 +58,9 @@ async def create_order(order: OrderPost, user=Depends(authenticated_user), db=De
     book = await db.get_collection("book").get(order.book)
     if book is None:
         raise RequestException("Book not found")
+    request_user = await db.get_collection("user").get(None, user_id=order.user)
+    if request_user is None:
+        raise RequestException("User not found")
     if book.quantity < order.quantity:
         raise RequestException("Not enough books in stock")
     book = book.model_copy(update={"quantity": book.quantity - order.quantity})
