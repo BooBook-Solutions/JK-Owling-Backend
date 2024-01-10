@@ -24,10 +24,6 @@ router = APIRouter(
 async def login_user(request: Request, response: Response, db=Depends(get_db)):
     data = await request.json()
     google_token = data.get("google_token")
-    role = data.get("role")
-    if role is None or role not in [UserRole.ADMIN, UserRole.USER]:
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"message": "Invalid role"}
     if google_token is None:
         raise Exception("Invalid google token")
     try:
@@ -36,11 +32,14 @@ async def login_user(request: Request, response: Response, db=Depends(get_db)):
         if info:
             user = await db.get_collection("user").get(email=info.get("email"))
             if user is None:
+                role = data.get("role")
+                if role is None or role not in [v.value for v in UserRole.__members__.values()]:
+                    raise Exception("Invalid role")
                 new_user = User(**{"name": info.get("given_name"),
                                    "surname": info.get("family_name"),
                                    "picture": info.get("picture"),
                                    "email": info.get("email"),
-                                   "role": UserRole.USER})
+                                   "role": UserRole(role)})
                 user_collection = db.get_collection("user")
                 user = await user_collection.create(new_user)
                 logger.info("User created: " + str(user))

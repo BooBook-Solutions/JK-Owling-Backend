@@ -29,11 +29,16 @@ class OrderCollection(BasePostgresCollection[Order]):
         self.instance_class = Order
         self.postgres_class = PostgresOrder
 
-    async def filter(self, user_id: Optional[str] = None, **kwargs) -> List[Order]:
+    async def filter(self, user_id: Optional[str] = None, book_id: Optional[str] = None, **kwargs) -> List[Order]:
         if user_id is None:
-            items = self.session.query(self.postgres_class).all()
-        else:
+            if book_id is None:
+                items = self.session.query(self.postgres_class).all()
+            else:
+                items = self.session.query(self.postgres_class).filter_by(book=book_id).all()
+        elif book_id is None:
             items = self.session.query(self.postgres_class).filter_by(user=user_id).all()
+        else:
+            items = self.session.query(self.postgres_class).filter_by(user=user_id, book=book_id).all()
         return self.to_pydantic(items, List[Order])
 
     async def update(self, order_id: str, **kwargs) -> Order:
