@@ -1,16 +1,14 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from enum import Enum
-from typing import TypeVar, Generic, List, get_args
+from typing import TypeVar, Generic, List
 
 from bson import ObjectId
 from pydantic import BaseModel
 
-from core.schemas import User
-
 T = TypeVar('T', bound=BaseModel)
 
 
-class BaseCollection(ABC, Generic[T]):
+class BaseMongoCollection(ABC, Generic[T]):
 
     def __init__(self, database):
         self.database = database

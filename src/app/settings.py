@@ -2,6 +2,8 @@ import os
 
 # Database
 MONGODB_URL = os.getenv('MONGODB_URL', 'mongodb://localhost:27017/')
+POSTGRES_URL = os.getenv('POSTGRES_URL', 'postgresql://postgres:password@localhost:5432/jkowling')
+DB_TYPE = os.getenv('DB_TYPE', 'postgresql')  # postgresql or mongodb
 
 # Authentication
 HASH_SECRET_KEY = os.getenv('HASH_SECRET_KEY', '')

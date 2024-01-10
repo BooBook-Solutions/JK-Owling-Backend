@@ -34,9 +34,17 @@ async def get_users(db=Depends(get_db)):
     return users
 
 
+@router.get("/email", response_model=UserGetResponse)
+async def get_user(user_email: str, db=Depends(get_db)):
+    user = await db.get_collection("user").get(user_email)
+    if user is None:
+        raise RequestException("User not found")
+    return return_user(user)
+
+
 @router.get("/{user_id}", response_model=UserGetResponse)
 async def get_user(user_id: str, db=Depends(get_db)):
-    user = await db.get_collection("user").get(user_id)
+    user = await db.get_collection("user").get(None, user_id=user_id)
     if user is None:
         raise RequestException("User not found")
     return return_user(user)

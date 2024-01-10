@@ -54,6 +54,9 @@ async def delete_book(book_id: str, user=Depends(authenticated_admin), db=Depend
     book = await db.get_collection("book").get(book_id)
     if book is None:
         raise RequestException("Book not found")
+    orders = await db.get_collection("order").filter(book_id=book_id)
+    if len(orders) > 0:
+        raise RequestException("Cannot delete book with orders")
     result = await db.get_collection("book").delete(book_id)
     if result:
         logger.info("User " + str(user.id) + " deleted book: " + str(book))
