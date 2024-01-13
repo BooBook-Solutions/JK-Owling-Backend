@@ -44,7 +44,7 @@ async def login_user(request: Request, response: Response, db=Depends(get_db)):
                 user = await user_collection.create(new_user)
                 logger.info("User created: " + str(user))
 
-            response_dict = {k: v for k, v in user.model_dump().items() if k is not "role"}
+            response_dict = {k: v for k, v in user.model_dump().items() if k != "role"}
             response_dict["role"] = {
                 "name": user.role.value,
                 "name_translated": UserRoleMapping.from_user_role(user.role).value
