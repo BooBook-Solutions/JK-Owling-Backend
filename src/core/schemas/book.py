@@ -37,4 +37,4 @@ class BookListing(BaseModel):
     image: str | None = None
     price: str | None = None
     url: str | None = None
-    stars: str | None = None
+    stars: float | None = None

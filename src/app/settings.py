@@ -20,5 +20,6 @@ FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
 # Apis
 RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY', '')
 AMAZON_EXTRACTOR_URL = os.getenv('AMAZON_EXTRACTOR_URL', '')
+AMAZON_EXTRACTOR_KEY = os.getenv('AMAZON_EXTRACTOR_KEY', '')
 BOOK_INFO_URL = os.getenv('BOOK_INFO_URL', '')
 
