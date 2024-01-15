@@ -24,6 +24,7 @@ class Book(BaseModel):
 
 
 class BookInfo(BaseModel):
+    found: bool | None = None
     title: str | None = None
     rating: float | None = None
     first_publish_year: int | None = None
