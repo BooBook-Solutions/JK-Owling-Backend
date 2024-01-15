@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
 
 # Database
 MONGODB_URL = os.getenv('MONGODB_URL', 'mongodb://localhost:27017/')

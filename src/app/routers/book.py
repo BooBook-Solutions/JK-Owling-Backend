@@ -55,20 +55,25 @@ async def get_book_info(book_id: str, db=Depends(get_db)):
     response = requests.get(BOOK_INFO_URL, params=query_params)
     response.encoding = "utf-8"
     json_response = json.loads(response.text)
+    print(response.text)
 
     num_found = json_response["num_found"]
-    result = {"found": False, "title": book_title}
+    result = {
+        "found": False,
+        "title": book_title,
+        "rating": None,
+        "first_publish_year": None,
+        "number_of_pages": None,
+        "characters": None,
+        "first_sentence": None,
+        "languages": None
+    }
     if num_found > 0:
-        result = {
-            "found": True,
-            "first_publish_year": json_response["docs"][0]["first_publish_year"],
-            "title": json_response["docs"][0]["title"],
-            "number_of_pages": json_response["docs"][0]["number_of_pages_median"],
-            "rating": json_response["docs"][0]["ratings_average"],
-            "characters": json_response["docs"][0]["person"],
-            "first_sentence": json_response["docs"][0]["first_sentence"],
-            "languages": json_response["docs"][0]["language"],
-        }
+        result["found"] = True
+        for key in ["title", "rating", "first_publish_year", "number_of_pages", "characters",
+                    "first_sentence", "languages"]:
+            if key in json_response["docs"][0]:
+                result[key] = json_response["docs"][0][key]
 
     return result
 
