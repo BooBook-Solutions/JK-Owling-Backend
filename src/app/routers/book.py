@@ -68,12 +68,21 @@ async def get_book_info(book_id: str, db=Depends(get_db)):
         "first_sentence": None,
         "languages": None
     }
+    mapping = {
+        "found": "found",
+        "title": "title",
+        "rating": "ratings_average",
+        "first_publish_year": "first_publish_year",
+        "number_of_pages": "number_of_pages_median",
+        "characters": "person",
+        "first_sentence": "first_sentence",
+        "languages": "language"
+    }
     if num_found > 0:
         result["found"] = True
-        for key in ["title", "rating", "first_publish_year", "number_of_pages", "characters",
-                    "first_sentence", "languages"]:
-            if key in json_response["docs"][0]:
-                result[key] = json_response["docs"][0][key]
+        for key in result.keys():
+            if mapping[key] in json_response["docs"][0]:
+                result[key] = json_response["docs"][0][mapping[key]]
 
     return result
 
