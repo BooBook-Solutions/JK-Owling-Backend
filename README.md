@@ -31,6 +31,9 @@ They are defined in the following table:
 | GOOGLE_CLIENT_ID          | The google cliend id used to validate the google login token                                                                 |
 | HASH_ALGORITHM            | The hash algorithm to be used to encode the authorization token (Ex. `HS256`)                                                |
 | HASH_SECRET_KEY           | The secret key used by the algorithm to encode the authorization token (Can be generated in cmd with `openssl rand -hex 32`) |
+| POSTGRES_URL              | URL for the database PostgreSQL url                                                                                          |
+| MONGODB_URL               | URL for the database MongoDB url                                                                                             |
+| DB_TYPE                   | Define which database service should be used (`postgresql` or `mongodb`)                                                     |
 | AMAZON_EXTRACTOR_KEY      | Key defining the service amazon_data_extractor by RapidAPI                                                                   |
 | AMAZON_EXTRACTOR_URL      | URL defining for accessing the service amazon_data_extractor by RapidAPI                                                     |
 | RAPIDAPI_KEY              | Key for accessing services offered by RapidAPI                                                                               |
