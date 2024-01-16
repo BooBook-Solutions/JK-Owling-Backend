@@ -94,7 +94,7 @@ async def delete_order(order_id: str, user=Depends(authenticated_user), db=Depen
     order = await db.get_collection("order").get(order_id)
     if order is None:
         raise RequestException("Order not found")
-    if order.user != user.id:
+    if order.user and order.user != user.id:
         raise RequestException("You are not allowed to delete this order")
     result = await db.get_collection("order").delete(order_id)
     if result:
