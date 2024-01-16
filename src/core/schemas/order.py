@@ -46,7 +46,7 @@ class OrderPost(BaseModel):
 
 class OrderGetResponse(BaseModel):
     id: int
-    user: User
-    book: Book
+    user: User | None = None
+    book: Book | None = None
     quantity: int
     status: StatusGetResponse
