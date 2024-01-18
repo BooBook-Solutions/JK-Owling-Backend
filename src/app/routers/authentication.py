@@ -53,7 +53,6 @@ async def login_user(request: Request, response: Response, db=Depends(get_db)):
                 "user": response_dict,
                 "expires": time.time() + (60 * 60 * 24)  # 24h
             }
-            print(payload)
 
             token = jwt.encode(payload, HASH_SECRET_KEY, algorithm=HASH_ALGORITHM)
 

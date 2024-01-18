@@ -43,9 +43,6 @@ async def get_book_info(book_id: str, db=Depends(get_db)):
         raise RequestException("Book not found")
 
     book_title = book.title + " " + book.author
-    # book_title = "Twilight"
-    # {"title":"Twilight","rating":3.65,"first_publish_year":1990,"number_of_pages":498,"characters":["Edward Cullen","Bella Swan","Jacob Black","Carlisle Cullen","Esme Cullen","Alice Cullen","Emmett Cullen","Rosalie Hale","Jasper Hale","James","Victoria","Laurent","Billy Black"],"first_sentence":["MY MOTHER DROVE ME TO THE AIRPORT WITH THE windows rolled down.","I'd never given much thought to how I would die--though I had reason enough in the last few months--but even if I had, I would not have imagined it like this."],"languages":["eng","spa","chi","ger","pol","gre","por","fre","vie","ind","ara","rus"]}
-
     query_params = {
         "q": book_title,
         "limit": 1,
@@ -93,9 +90,6 @@ async def get_book_listings(book_id: str, db=Depends(get_db)):
         raise RequestException("Book not found")
 
     book_title = book.title
-    # book_title = "Twilight"
-    # return [{"image":"https://m.media-amazon.com/images/I/81hJRgAMa7L.jpg","price":"11.22€","url":"https://www.amazon.com/What-Expect-First-Heidi-Murkoff/dp/0761181504/ref=sr_1_1?dib=eyJ2IjoiMSJ9.WPbQSLDK8CFwR_eR2OIIdyLxUSZaZrRTijLIewN4iG7keP-JsC1YffcI6AN_tYIHJX5vtMCAJ9GYGNA4g2mTycqXXVz5JEciCS6O6vFR5dXxqhknmKBxxoaHcrZHA0g9Yk2uE4Mj8p705bQZENrMHg.1QxYxmQN-gx5clgkim2LaGR30vAqSat7byCC46C5VAY&dib_tag=se&keywords=Book+First+book&qid=1705245695&sr=8-1","stars":4.8},{"image":"https://m.media-amazon.com/images/I/71eUoeoSoBL.jpg","price":"13.95€","url":"https://www.amazon.com/First-Little-Readers-Parent-Pack/dp/0545231493/ref=sr_1_2?dib=eyJ2IjoiMSJ9.WPbQSLDK8CFwR_eR2OIIdyLxUSZaZrRTijLIewN4iG7keP-JsC1YffcI6AN_tYIHJX5vtMCAJ9GYGNA4g2mTycqXXVz5JEciCS6O6vFR5dXxqhknmKBxxoaHcrZHA0g9Yk2uE4Mj8p705bQZENrMHg.1QxYxmQN-gx5clgkim2LaGR30vAqSat7byCC46C5VAY&dib_tag=se&keywords=Book+First+book&qid=1705245695&sr=8-2","stars":4.7},{"image":"https://m.media-amazon.com/images/I/81vaq5oh1nL.jpg","price":"6.99€","url":"https://www.amazon.com/First-100-Animals-Sticker-Book/dp/0312520115/ref=sr_1_3?dib=eyJ2IjoiMSJ9.WPbQSLDK8CFwR_eR2OIIdyLxUSZaZrRTijLIewN4iG7keP-JsC1YffcI6AN_tYIHJX5vtMCAJ9GYGNA4g2mTycqXXVz5JEciCS6O6vFR5dXxqhknmKBxxoaHcrZHA0g9Yk2uE4Mj8p705bQZENrMHg.1QxYxmQN-gx5clgkim2LaGR30vAqSat7byCC46C5VAY&dib_tag=se&keywords=Book+First+book&qid=1705245695&sr=8-3","stars":4.8},{"image":"https://m.media-amazon.com/images/I/81g3WrvekaL.jpg","price":"11.99€","url":"https://aax-us-iad.amazon.com/x/c/RKdz2j3W8f6cGfuEpdQuMOAAAAGNCJBfawEAAAH2AQBvbm9fdHhuX2JpZDYgICBvbm9fdHhuX2ltcDEgICBgBVYh/https://www.amazon.com/Should-Darla-Featuring-Power-Choose/dp/173309461X/ref=sxin_14_sbv_search_btf?content-id=amzn1.sym.6ca944f8-539c-499e-a3a4-26a566d1de59%3Aamzn1.sym.6ca944f8-539c-499e-a3a4-26a566d1de59&cv_ct_cx=Book+First+book&dib=eyJ2IjoiMSJ9.XIylDFZYui7qI6KeKeabIg.FYqYSTESlAfYbDqLUD2Mcn0y3FAr7RLtrTfGLbutHp8&dib_tag=se&keywords=Book+First+book&pd_rd_i=173309461X&pd_rd_r=579622ad-8a89-420e-8d44-c5a36bb806ad&pd_rd_w=NhhEE&pd_rd_wg=49VLR&pf_rd_p=6ca944f8-539c-499e-a3a4-26a566d1de59&pf_rd_r=C4NXNQM6N7CNJEGVTQS7&qid=1705245695&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sr=1-1-5190daf0-67e3-427c-bea6-c72c1df98776","stars":4.8},{"image":"https://m.media-amazon.com/images/I/81lmTHZOD1L.jpg","price":"7.59€","url":"https://www.amazon.com/First-Numbers-Colors-Shapes-100/dp/0312520638/ref=sr_1_4?dib=eyJ2IjoiMSJ9.WPbQSLDK8CFwR_eR2OIIdyLxUSZaZrRTijLIewN4iG7keP-JsC1YffcI6AN_tYIHJX5vtMCAJ9GYGNA4g2mTycqXXVz5JEciCS6O6vFR5dXxqhknmKBxxoaHcrZHA0g9Yk2uE4Mj8p705bQZENrMHg.1QxYxmQN-gx5clgkim2LaGR30vAqSat7byCC46C5VAY&dib_tag=se&keywords=Book+First+book&qid=1705245695&sr=8-4","stars":4.8}]
-
     url = AMAZON_EXTRACTOR_URL + urllib.parse.quote(book_title + " " + book.author)
 
     querystring = {"api_key": AMAZON_EXTRACTOR_KEY}
