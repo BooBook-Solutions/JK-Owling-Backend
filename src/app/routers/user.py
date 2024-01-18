@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 from starlette.requests import Request
 
-from app.authentication import authenticated_user
+from app.authentication import authenticated_user, authenticated_admin
 from app.common import RequestException
 from app.database import get_db
 import logging
@@ -28,17 +28,27 @@ async def get_user_roles():
 
 
 @router.get("", response_model=List[UserGetResponse])
-async def get_users(db=Depends(get_db)):
+async def get_users(db=Depends(get_db), admin=Depends(authenticated_admin)):
     users = await db.get_collection("user").filter()
     users = [return_user(user) for user in users]
     return users
 
 
-@router.get("/{user_id}", response_model=UserGetResponse)
-async def get_user(user_id: str, db=Depends(get_db)):
-    user = await db.get_collection("user").get(user_id)
+@router.get("/email", response_model=UserGetResponse)
+async def get_user(user_email: str, db=Depends(get_db)):
+    user = await db.get_collection("user").get(user_email)
     if user is None:
         raise RequestException("User not found")
+    return return_user(user)
+
+
+@router.get("/{user_id}", response_model=UserGetResponse)
+async def get_user(user_id: str, db=Depends(get_db), user=Depends(authenticated_user)):
+    request_user = await db.get_collection("user").get(None, user_id=user_id)
+    if request_user is None:
+        raise RequestException("User not found")
+    if user.role != ADMIN_ROLE and user_id != str(user.id):
+        raise RequestException("You are not allowed to get this user")
     return return_user(user)
 
 
@@ -47,7 +57,7 @@ async def update_user(user_id: str, request: Request, user=Depends(authenticated
     request_user = await db.get_collection("user").get(None, user_id=user_id)
     if request_user is None:
         raise RequestException("User not found")
-    if user.role != ADMIN_ROLE and user_id != user.id:
+    if user.role != ADMIN_ROLE and user_id != str(user.id):
         raise RequestException("You are not allowed to update this user")
 
     data = await request.json()
@@ -67,7 +77,7 @@ async def delete_user(user_id: str, user=Depends(authenticated_user), db=Depends
     request_user = await db.get_collection("user").get(None, user_id=user_id)
     if request_user is None:
         raise RequestException("User not found")
-    if user.role != ADMIN_ROLE and user_id != user.id:
+    if user.role != ADMIN_ROLE and user_id != str(user.id):
         raise RequestException("You are not allowed to delete this user")
     result = await db.get_collection("user").delete(user_id)
 

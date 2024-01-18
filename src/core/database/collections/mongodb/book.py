@@ -1,8 +1,8 @@
-from core.collections.common import BaseCollection
+from core.database.collections.mongodb.common import BaseMongoCollection
 from core.schemas import Book
 
 
-class BookCollection(BaseCollection[Book]):
+class BookCollection(BaseMongoCollection[Book]):
 
     def __init__(self, database):
         super().__init__(database)

@@ -25,6 +25,8 @@ async def authentication_middleware(request: Request, call_next):
                 raise credentials_exception
             request.state.is_authenticated = True
             request.state.authenticated_token = payload
+            user_dict = payload.get("user")
+            user_dict["role"] = user_dict["role"]["name"]
             request.state.authenticated_user = User(**payload.get("user"))
 
         except JWTError:

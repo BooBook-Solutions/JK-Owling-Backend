@@ -2,11 +2,11 @@ from typing import List, Optional
 
 from bson import ObjectId
 
-from core.collections.common import BaseCollection
+from core.database.collections.mongodb.common import BaseMongoCollection
 from core.schemas import Order
 
 
-class OrderCollection(BaseCollection[Order]):
+class OrderCollection(BaseMongoCollection[Order]):
 
     def __init__(self, database):
         super().__init__(database)

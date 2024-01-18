@@ -14,3 +14,8 @@ pymongo[srv]~=4.6.1
 google~=3.0.0
 
 starlette~=0.27.0
+SQLAlchemy~=2.0.25
+
+psycopg2
+
+python-dotenv~=1.0.0

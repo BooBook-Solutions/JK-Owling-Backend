@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from app.settings import ADMIN_ROLE, USER_ROLE
 
 
-class UserRole(Enum):
+class UserRole(str, Enum):
     ADMIN = ADMIN_ROLE
     USER = USER_ROLE
 
@@ -36,7 +36,7 @@ class UserRoleGetResponse(BaseModel):
 
 
 class User(BaseModel):
-    id: str | None = None
+    id: int | None = None
     name: str | None = None
     surname: str | None = None
     email: str | None = None
@@ -45,7 +45,7 @@ class User(BaseModel):
 
 
 class UserGetResponse(BaseModel):
-    id: str
+    id: int
     name: str | None = None
     surname: str | None = None
     email: str | None = None
