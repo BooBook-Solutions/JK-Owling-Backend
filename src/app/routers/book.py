@@ -107,15 +107,16 @@ async def get_book_listings(book_id: str, db=Depends(get_db)):
 
     response = requests.get(url, headers=headers, params=querystring, verify=False)
 
-    results = [{
-        "name": result["name"],
-        "image": result["image"],
-        "stars": result["stars"],
-        "price": str(result["price"]) + "€",
-        "url": result["url"]
-    } for result in response.json()["results"][:5]]
+    parameters = ["name", "image", "stars", "url"]
+    listings = []
+    for result in response.json()["results"][:5]:
+        listing = {parameter: (result[parameter] if parameter in result else "") for parameter in parameters}
+        listing["price"] = ""
+        if "price" in result:
+            listing["price"] = str(result["price"]) + "€"
+        listings.append(listing)
 
-    return results
+    return listings
 
 
 @router.post("", response_model=Book)
