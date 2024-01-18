@@ -108,6 +108,7 @@ async def get_book_listings(book_id: str, db=Depends(get_db)):
     response = requests.get(url, headers=headers, params=querystring, verify=False)
 
     results = [{
+        "name": result["name"],
         "image": result["image"],
         "stars": result["stars"],
         "price": str(result["price"]) + "€",

@@ -35,6 +35,7 @@ class BookInfo(BaseModel):
 
 
 class BookListing(BaseModel):
+    name: str | None = None
     image: str | None = None
     price: str | None = None
     url: str | None = None
