@@ -107,10 +107,11 @@ async def get_book_listings(book_id: str, db=Depends(get_db)):
 
     response = requests.get(url, headers=headers, params=querystring, verify=False)
 
-    parameters = ["name", "image", "stars", "url"]
+    parameters = {"name": "", "image": "", "stars": 0, "url": ""}
     listings = []
     for result in response.json()["results"][:5]:
-        listing = {parameter: (result[parameter] if parameter in result else "") for parameter in parameters}
+        listing = {parameter: (result[parameter] if parameter in result else parameters[parameter])
+                   for parameter in parameters}
         listing["price"] = ""
         if "price" in result:
             listing["price"] = str(result["price"]) + "€"
