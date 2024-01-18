@@ -1,15 +1,18 @@
 from abc import ABC
 from enum import Enum
-from typing import TypeVar, Generic, List
+from typing import TypeVar, List
 
 from pydantic import BaseModel
+
+from core.database.collections.base import BaseCollection
 
 T = TypeVar('T', bound=BaseModel)
 
 
-class BasePostgresCollection(ABC, Generic[T]):
+class BasePostgresCollection(BaseCollection[T]):
 
     def __init__(self, session):
+        super().__init__()
         self.session = session
         self.collection = None
         self.instance_class = None

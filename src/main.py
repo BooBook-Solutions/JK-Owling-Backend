@@ -27,7 +27,7 @@ async def catch_exceptions_middleware(request: Request, call_next):
         return await call_next(request)
     except RequestException as e:
         traceback.print_exc()
-        exception_response = ExceptionResponse(message=str(e))
+        exception_response = ExceptionResponse(detail=str(e))
         return JSONResponse(content=jsonable_encoder(exception_response), status_code=400)
 
 origins = [

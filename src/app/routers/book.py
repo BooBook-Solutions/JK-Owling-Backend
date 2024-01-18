@@ -55,7 +55,6 @@ async def get_book_info(book_id: str, db=Depends(get_db)):
     response = requests.get(BOOK_INFO_URL, params=query_params)
     response.encoding = "utf-8"
     json_response = json.loads(response.text)
-    print(response.text)
 
     num_found = json_response["num_found"]
     result = {

@@ -28,7 +28,11 @@ async def get_statuses():
 
 
 @router.get("", response_model=List[OrderGetResponse])
-async def get_orders(user_id: str = None, db=Depends(get_db)):
+async def get_orders(user_id: str = None, db=Depends(get_db), user=Depends(authenticated_user)):
+    if user.role != ADMIN_ROLE:
+        if user_id is not None and str(user.id) != user_id:
+            raise RequestException("You are not allowed to get the orders of this user")
+        user_id = str(user.id)
     orders = await db.get_collection("order").filter(user_id)
     orders_response = []
     for order in orders:
@@ -38,8 +42,12 @@ async def get_orders(user_id: str = None, db=Depends(get_db)):
 
 
 @router.get("/{order_id}", response_model=OrderGetResponse)
-async def get_order(order_id: str, db=Depends(get_db)):
+async def get_order(order_id: str, db=Depends(get_db), user=Depends(authenticated_user)):
     order = await db.get_collection("order").get(order_id)
+    if order is None:
+        raise RequestException("Order not found")
+    if user.role != ADMIN_ROLE and order.user != str(user.id):
+        raise RequestException("You are not allowed to get this order")
 
     return await return_order(order, db)
 
@@ -52,7 +60,7 @@ async def create_order(order: OrderPost, user=Depends(authenticated_user), db=De
         "quantity": order.quantity,
         "status": Status.PENDING
     })
-    if user.role != ADMIN_ROLE and order.user != user.id:
+    if user.role != ADMIN_ROLE and order.user != str(user.id):
         raise RequestException("You are not allowed to create an order for this user")
 
     book = await db.get_collection("book").get(order.book)
@@ -95,8 +103,12 @@ async def delete_order(order_id: str, user=Depends(authenticated_user), db=Depen
     if order is None:
         raise RequestException("Order not found")
     order_user = await db.get_collection("user").get(None, user_id=order.user)
-    if user.role != ADMIN_ROLE and order_user and order.user != user.id:
+    if user.role != ADMIN_ROLE and order_user and order.user != str(user.id):
         raise RequestException("You are not allowed to delete this order")
+
+    if user.role != ADMIN_ROLE and order.status != Status.PENDING:
+        raise RequestException("You are not allowed to delete a non pending order")
+
     result = await db.get_collection("order").delete(order_id)
     if result:
         logger.info("User " + str(user.id) + " deleted order: " + str(order))
