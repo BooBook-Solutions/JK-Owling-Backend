@@ -18,7 +18,7 @@ uvicorn main:app --reload
 With the reload parameter set, the server restarts automatically every time a file is changed.
 The default port used is `8000`. In order to set a different port use the `--port` parameter:
 ```
-uvicorn main:app --reload --port 8086
+uvicorn main:app --reload --port 8000
 ```
 
 
@@ -28,6 +28,7 @@ In order to make the application work correctly, some environment variable are n
 They are defined in the following table:
 | Name                      | Description                                                                                                                  |
 |---------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| FRONTEND_URL              | URL where the frontend application is reachable. Necessary to allow CORS requests                                            |
 | GOOGLE_CLIENT_ID          | The google cliend id used to validate the google login token                                                                 |
 | HASH_ALGORITHM            | The hash algorithm to be used to encode the authorization token (Ex. `HS256`)                                                |
 | HASH_SECRET_KEY           | The secret key used by the algorithm to encode the authorization token (Can be generated in cmd with `openssl rand -hex 32`) |
