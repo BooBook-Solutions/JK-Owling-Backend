@@ -6,7 +6,6 @@ from app.routers.authentication import router as authentication_router
 
 router = APIRouter(
     tags=["app"],
-    responses={404: {"description": "Release not found"}},
 )
 
 router.include_router(book_router, prefix="/books")

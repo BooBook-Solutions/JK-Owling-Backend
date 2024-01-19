@@ -23,6 +23,16 @@ class Book(BaseModel):
     quantity: Annotated[int, BeforeValidator(convert_str_to_int)] | None = None
 
 
+class BookPut(BaseModel):
+    book_id: int | None = None
+    title: str | None = None
+    description: str | None = None
+    author: str | None = None
+    price: Annotated[float, BeforeValidator(convert_str_to_float)] | None = None
+    cover: str | None = None
+    quantity: Annotated[int, BeforeValidator(convert_str_to_int)] | None = None
+
+
 class BookInfo(BaseModel):
     found: bool | None = None
     title: str | None = None

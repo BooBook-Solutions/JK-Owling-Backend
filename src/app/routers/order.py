@@ -10,7 +10,7 @@ import logging
 
 from app.settings import ADMIN_ROLE
 from core.schemas import Order
-from core.schemas.order import OrderPost, Status, OrderGetResponse, StatusGetResponse, StatusMapping
+from core.schemas.order import OrderPost, Status, OrderGetResponse, StatusGetResponse, StatusMapping, OrderPut
 
 logger = logging.getLogger("app.routers.order")
 
@@ -81,13 +81,12 @@ async def create_order(order: OrderPost, user=Depends(authenticated_user), db=De
 
 
 @router.put("/{order_id}", response_model=OrderGetResponse)
-async def update_order(order_id: str, request: Request, user=Depends(authenticated_admin), db=Depends(get_db)):
+async def update_order(order_id: str, order_input: OrderPut, user=Depends(authenticated_admin), db=Depends(get_db)):
     order = await db.get_collection("order").get(order_id)
     if order is None:
         raise RequestException("Order not found")
 
-    data = await request.json()
-    status = data.get("status")
+    status = order_input.status.value
     if status is None:
         raise RequestException("No status provided")
     order = await db.get_collection("order").update(order_id, status=status)

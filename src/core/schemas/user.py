@@ -35,6 +35,11 @@ class UserRoleGetResponse(BaseModel):
     name_translated: UserRoleMapping
 
 
+class UserPut(BaseModel):
+    user_id: int
+    role: UserRole
+
+
 class User(BaseModel):
     id: int | None = None
     name: str | None = None

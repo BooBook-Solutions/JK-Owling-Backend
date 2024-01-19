@@ -10,7 +10,7 @@ import logging
 
 from app.settings import ADMIN_ROLE
 from core.schemas import User
-from core.schemas.user import UserRole, UserRoleGetResponse, UserRoleMapping, UserGetResponse
+from core.schemas.user import UserRole, UserRoleGetResponse, UserRoleMapping, UserGetResponse, UserPut
 
 logger = logging.getLogger("app.routers.user")
 
@@ -53,7 +53,7 @@ async def get_user(user_id: str, db=Depends(get_db), user=Depends(authenticated_
 
 
 @router.put("/{user_id}", response_model=UserGetResponse)
-async def update_user(user_id: str, request: Request, user=Depends(authenticated_user), db=Depends(get_db)):
+async def update_user(user_id: str, user_input: UserPut, request: Request, user=Depends(authenticated_user), db=Depends(get_db)):
     request_user = await db.get_collection("user").get(None, user_id=user_id)
     if request_user is None:
         raise RequestException("User not found")

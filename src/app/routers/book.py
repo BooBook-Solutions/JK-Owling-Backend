@@ -13,7 +13,7 @@ from starlette.requests import Request
 
 from app.settings import RAPIDAPI_KEY, AMAZON_EXTRACTOR_URL, BOOK_INFO_URL, AMAZON_EXTRACTOR_KEY
 from core.schemas import Book
-from core.schemas.book import BookListing, BookInfo
+from core.schemas.book import BookListing, BookInfo, BookPut
 
 logger = logging.getLogger("app.routers.book")
 
@@ -122,7 +122,7 @@ async def create_book(book: Book, user=Depends(authenticated_admin), db=Depends(
 
 
 @router.put("/{book_id}", response_model=Book)
-async def update_book(book_id: str, request: Request, user=Depends(authenticated_admin), db=Depends(get_db)):
+async def update_book(book_id: str, input_book: BookPut, request: Request, user=Depends(authenticated_admin), db=Depends(get_db)):
     book = await db.get_collection("book").get(book_id)
     if book is None:
         raise RequestException("Book not found")

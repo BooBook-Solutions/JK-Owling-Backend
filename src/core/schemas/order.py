@@ -30,6 +30,11 @@ class StatusGetResponse(BaseModel):
     name_translated: StatusMapping
 
 
+class OrderPut(BaseModel):
+    status: Status
+    order_id: int
+
+
 class Order(BaseModel):
     id: int | None = None
     user: int | None = None
