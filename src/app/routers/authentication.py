@@ -6,6 +6,7 @@ from starlette import status
 from starlette.requests import Request
 
 from app.authentication import verify_google_token
+from app.common import RequestException
 from app.database import get_db
 import logging
 
@@ -32,7 +33,7 @@ async def login_user(login_input: LoginInput, response: Response, db=Depends(get
         if info:
             user = await db.get_collection("user").get(email=info.get("email"))
             if user is None:
-                role = login_input.get("role")
+                role = login_input.role
                 if role is None or role not in [v.value for v in UserRole.__members__.values()]:
                     raise Exception("Invalid role")
                 new_user = User(**{"name": info.get("given_name"),
@@ -65,5 +66,4 @@ async def login_user(login_input: LoginInput, response: Response, db=Depends(get
         import traceback
         traceback.print_exc()
 
-    response.status_code = status.HTTP_400_BAD_REQUEST
-    return {"message": "Invalid login credentials"}
+    raise RequestException("Invalid login credentials")

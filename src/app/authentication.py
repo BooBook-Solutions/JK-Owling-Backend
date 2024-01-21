@@ -17,7 +17,8 @@ logger = logging.getLogger("app.authentication")
 def verify_google_token(token: str) -> dict | None:
     try:
         # Verify the token with Google
-        id_info = id_token.verify_oauth2_token(token, requests.Request(), GOOGLE_CLIENT_ID)
+        id_info = id_token.verify_oauth2_token(token, requests.Request(), GOOGLE_CLIENT_ID,
+                                               clock_skew_in_seconds=10)
 
         # Extract relevant user information from the verified token
         user_info = {
